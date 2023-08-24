@@ -1,1 +1,54 @@
+import pandas as pd
+data = pd.read_csv('globalterrorism.csv', encoding='iso-8859-1')
+print(data.info())
+print(data.head())
+print(data.describe())
 
+import matplotlib.pyplot as plt
+data.hist(figsize=(50, 20))
+plt.show()
+
+missing_values = data.isnull().sum()
+print(missing_values)
+
+import seaborn as sns
+plt.figure(figsize=(10, 6))
+sns.countplot(x='attacktype1_txt', data=data, order=data['attacktype1_txt'].value_counts().index)
+plt.title('Distribution of Attack Types')
+plt.xticks(rotation=90)
+plt.show()
+
+plt.figure(figsize=(12, 6))
+sns.countplot(x='iyear', hue='region_txt', data=data)
+plt.title('Attack Trends by Region')
+plt.xticks(rotation=45)
+plt.legend(loc='upper left')
+plt.show()
+
+top_countries = data['country_txt'].value_counts().head(10)
+plt.figure(figsize=(12, 6))
+sns.barplot(x=top_countries.index, y=top_countries.values)
+plt.title('Top 10 Countries with Most Attacks')
+plt.xticks(rotation=45)
+plt.show()
+
+plt.figure(figsize=(12, 6))
+sns.countplot(x='iyear', data=data)
+plt.title('Attack Trends over Years')
+plt.xticks(rotation=45)
+plt.show()
+
+plt.figure(figsize=(50, 20))
+corr_matrix = data.corr()
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm')
+plt.title('Correlation Heatmap')
+plt.show()
+
+kill_per_year = data.groupby('iyear')['nkill'].sum()
+plt.figure(figsize=(12, 6))
+sns.barplot(x=kill_per_year.index, y=kill_per_year.values, color='salmon')
+plt.title('Total Number of People Killed per Year')
+plt.xlabel('Year')
+plt.ylabel('Number of People Killed')
+plt.xticks(rotation=90)
+plt.show()
